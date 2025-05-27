@@ -1,0 +1,77 @@
+{
+  "name": "blockchain-chess-arena",
+  "version": "1.0.0",
+  "description": "A Decentralized, Play-to-Earn Chess Platform on Blockchain",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy": "hardhat run scripts/deploy.js",
+    "server": "node server/index.js",
+    "dev:server": "nodemon server/index.js"
+  },
+  "dependencies": {
+    "@headlessui/react": "^1.7.0",
+    "@heroicons/react": "^2.0.0",
+    "@tanstack/react-query": "^4.36.0",
+    "autoprefixer": "^10.4.0",
+    "axios": "^1.6.0",
+    "chess.js": "^1.0.0-beta.6",
+    "ethers": "^5.7.2",
+    "framer-motion": "^10.16.0",
+    "next": "^14.2.0",
+    "postcss": "^8.4.0",
+    "react": "^18.2.0",
+    "react-chessboard": "^4.3.0",
+    "react-dom": "^18.2.0",
+    "react-hot-toast": "^2.4.0",
+    "socket.io-client": "^4.7.0",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.3.0",
+    "zustand": "^4.4.0"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@openzeppelin/contracts": "^5.0.0",
+    "@types/connect": "^3.4.38",
+    "@types/express": "^4.17.22",
+    "@types/mime": "^3.0.4",
+    "@types/node": "^22.15.23",
+    "@types/prop-types": "^15.7.14",
+    "@types/react": "^19.1.6",
+    "@types/react-dom": "^19.1.5",
+    "cors": "^2.8.0",
+    "dotenv": "^16.3.0",
+    "eslint": "^8.0.0",
+    "eslint-config-next": "^14.0.0",
+    "express": "^4.18.0",
+    "hardhat": "^2.19.0",
+    "mongoose": "^8.0.0",
+    "nodemon": "^3.0.0",
+    "socket.io": "^4.7.0"
+  },
+  "resolutions": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "overrides": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "keywords": [
+    "blockchain",
+    "chess",
+    "play-to-earn",
+    "web3",
+    "ethereum",
+    "polygon",
+    "nft",
+    "defi"
+  ],
+  "author": "BlockChain Chess Arena Team",
+  "license": "MIT"
+}
