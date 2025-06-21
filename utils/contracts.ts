@@ -46,7 +46,7 @@ export const getContractAddresses = (): ContractAddresses => ({
 export const getContract = (
   address: string,
   abi: string[],
-  signerOrProvider: ethers.Signer | ethers.providers.Provider
+  signerOrProvider: ethers.Signer | ethers.Provider
 ) => {
   return new ethers.Contract(address, abi, signerOrProvider);
 };
@@ -54,35 +54,35 @@ export const getContract = (
 // Get provider
 export const getProvider = () => {
   if (typeof window !== 'undefined' && window.ethereum) {
-    return new ethers.providers.Web3Provider(window.ethereum);
+    return new ethers.BrowserProvider(window.ethereum);
   }
   
   // Fallback to RPC provider
   const rpcUrl = process.env.NEXT_PUBLIC_RPC_URL;
   if (rpcUrl) {
-    return new ethers.providers.JsonRpcProvider(rpcUrl);
+    return new ethers.JsonRpcProvider(rpcUrl);
   }
   
   throw new Error('No provider available');
 };
 
 // Get signer
-export const getSigner = () => {
+export const getSigner = async () => {
   const provider = getProvider();
-  if (provider instanceof ethers.providers.Web3Provider) {
-    return provider.getSigner();
+  if (provider instanceof ethers.BrowserProvider) {
+    return await provider.getSigner();
   }
   throw new Error('No signer available');
 };
 
 // Format token amount
 export const formatTokenAmount = (amount: string | number, decimals: number = 18): string => {
-  return ethers.utils.formatUnits(amount.toString(), decimals);
+  return ethers.formatUnits(amount.toString(), decimals);
 };
 
 // Parse token amount
-export const parseTokenAmount = (amount: string, decimals: number = 18): ethers.BigNumber => {
-  return ethers.utils.parseUnits(amount, decimals);
+export const parseTokenAmount = (amount: string, decimals: number = 18): bigint => {
+  return ethers.parseUnits(amount, decimals);
 };
 
 // Check if contracts are deployed

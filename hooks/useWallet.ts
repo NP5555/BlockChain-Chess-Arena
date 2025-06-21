@@ -20,11 +20,11 @@ export function useWallet() {
     }
 
     try {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const provider = new ethers.BrowserProvider(window.ethereum);
       const accounts = await provider.listAccounts();
       
       if (accounts.length > 0) {
-        const signer = provider.getSigner();
+        const signer = await provider.getSigner();
         const address = await signer.getAddress();
         const network = await provider.getNetwork();
         const balance = await provider.getBalance(address);
@@ -34,9 +34,9 @@ export function useWallet() {
         
         setWallet({
           address,
-          chainId: network.chainId,
+          chainId: Number(network.chainId),
           isConnected: true,
-          balance: ethers.utils.formatEther(balance),
+          balance: ethers.formatEther(balance),
           chessTokenBalance
         });
       }
@@ -59,8 +59,8 @@ export function useWallet() {
       // Request account access
       await window.ethereum.request({ method: 'eth_requestAccounts' });
       
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
       const address = await signer.getAddress();
       const network = await provider.getNetwork();
       const balance = await provider.getBalance(address);
@@ -70,9 +70,9 @@ export function useWallet() {
       
       setWallet({
         address,
-        chainId: network.chainId,
+        chainId: Number(network.chainId),
         isConnected: true,
-        balance: ethers.utils.formatEther(balance),
+        balance: ethers.formatEther(balance),
         chessTokenBalance
       });
     } catch (err: any) {
@@ -171,7 +171,7 @@ export function useWallet() {
     if (!wallet || !window.ethereum) return;
 
     try {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const provider = new ethers.BrowserProvider(window.ethereum);
       const balance = await provider.getBalance(wallet.address);
       
       // Get CHESS token balance (placeholder for now)
@@ -179,7 +179,7 @@ export function useWallet() {
       
       setWallet((prev: WalletConnection | null) => prev ? {
         ...prev,
-        balance: ethers.utils.formatEther(balance),
+        balance: ethers.formatEther(balance),
         chessTokenBalance
       } : null);
     } catch (err) {
