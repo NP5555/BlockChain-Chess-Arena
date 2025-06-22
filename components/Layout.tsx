@@ -1,7 +1,7 @@
 import { ReactNode, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { motion, AnimatePresence, HTMLMotionProps } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Bars3Icon,
   XMarkIcon,
@@ -14,6 +14,7 @@ import {
 } from '@heroicons/react/24/outline';
 
 import WalletConnect from './WalletConnect';
+import ClientOnly from './ClientOnly';
 import { useWallet } from '@/hooks/useWallet';
 
 interface LayoutProps {
@@ -32,14 +33,6 @@ const navigation = [
 export default function Layout({ children }: LayoutProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { wallet } = useWallet();
-  const router = useRouter();
-
-  const isActive = (href: string) => {
-    if (href === '/') {
-      return router.pathname === '/';
-    }
-    return router.pathname.startsWith(href);
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
@@ -55,23 +48,9 @@ export default function Layout({ children }: LayoutProps) {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8">
-              {navigation.map((item) => {
-                const active = isActive(item.href);
-                return (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className={`flex items-center space-x-1 px-3 py-2 rounded-lg transition-all duration-200 ${
-                      active
-                        ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30'
-                        : 'text-gray-300 hover:text-white hover:bg-white/10'
-                    }`}
-                  >
-                    <item.icon className="w-4 h-4" />
-                    <span>{item.name}</span>
-                  </Link>
-                );
-              })}
+              <ClientOnly>
+                <NavigationLinks />
+              </ClientOnly>
             </div>
 
             {/* Wallet Connection & Mobile Menu */}
@@ -96,35 +75,20 @@ export default function Layout({ children }: LayoutProps) {
         {/* Mobile Navigation Menu */}
         <AnimatePresence>
           {mobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              style={{ overflow: 'hidden' }}
-              className="md:hidden bg-black/40 backdrop-blur-md border-t border-white/10"
-              {...({} as any)}
-            >
-              <div className="px-4 py-4 space-y-2">
-                {navigation.map((item) => {
-                  const active = isActive(item.href);
-                  return (
-                    <Link
-                      key={item.name}
-                      href={item.href}
-                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ${
-                        active
-                          ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30'
-                          : 'text-gray-300 hover:text-white hover:bg-white/10'
-                      }`}
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      <item.icon className="w-5 h-5" />
-                      <span>{item.name}</span>
-                    </Link>
-                  );
-                })}
-              </div>
-            </motion.div>
+            <div className="md:hidden bg-black/40 backdrop-blur-md border-t border-white/10">
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                style={{ overflow: 'hidden' }}
+              >
+                <div className="px-4 py-4 space-y-2">
+                  <ClientOnly>
+                    <MobileNavigationLinks onItemClick={() => setMobileMenuOpen(false)} />
+                  </ClientOnly>
+                </div>
+              </motion.div>
+            </div>
           )}
         </AnimatePresence>
       </nav>
@@ -241,5 +205,74 @@ export default function Layout({ children }: LayoutProps) {
         </div>
       </footer>
     </div>
+  );
+}
+
+// Separate component for navigation links to use router
+function NavigationLinks() {
+  const router = useRouter();
+  
+  const isActive = (href: string) => {
+    if (href === '/') {
+      return router.pathname === '/';
+    }
+    return router.pathname.startsWith(href);
+  };
+  
+  return (
+    <>
+      {navigation.map((item) => {
+        const active = isActive(item.href);
+        return (
+          <Link
+            key={item.name}
+            href={item.href}
+            className={`flex items-center space-x-1 px-3 py-2 rounded-lg transition-all duration-200 ${
+              active
+                ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30'
+                : 'text-gray-300 hover:text-white hover:bg-white/10'
+            }`}
+          >
+            <item.icon className="w-4 h-4" />
+            <span>{item.name}</span>
+          </Link>
+        );
+      })}
+    </>
+  );
+}
+
+// Separate component for mobile navigation links
+function MobileNavigationLinks({ onItemClick }: { onItemClick: () => void }) {
+  const router = useRouter();
+  
+  const isActive = (href: string) => {
+    if (href === '/') {
+      return router.pathname === '/';
+    }
+    return router.pathname.startsWith(href);
+  };
+  
+  return (
+    <>
+      {navigation.map((item) => {
+        const active = isActive(item.href);
+        return (
+          <Link
+            key={item.name}
+            href={item.href}
+            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+              active
+                ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30'
+                : 'text-gray-300 hover:text-white hover:bg-white/10'
+            }`}
+            onClick={onItemClick}
+          >
+            <item.icon className="w-5 h-5" />
+            <span>{item.name}</span>
+          </Link>
+        );
+      })}
+    </>
   );
 } 
